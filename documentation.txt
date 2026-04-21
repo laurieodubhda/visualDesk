@@ -1,0 +1,388 @@
+================================================================================
+visualDesk Documentation
+================================================================================
+
+OVERVIEW
+--------
+visualDesk (vD) is a work environment for audio-visual projects, designed to
+facilitate an intuitive relationship between image and sound through a modular,
+nodular structure — enabling the user to experiment and improvise in real time.
+
+The system is built around visual channels that process visuals through chains
+of filters, running left to right. Chains are automatically updated as filters
+are added or removed. Each filter performs a specific function, with its
+essential parameters exposed as individual sliders that can be controlled
+manually, via MIDI, via CHOPs, or via the preset system.
+
+NOTE: The current version is functional but has known issues. Save regularly
+and keep the textport open (Option + T).
+
+
+================================================================================
+PROJECT
+================================================================================
+
+The project represents the main GUI window. From top to bottom it contains:
+the toolbar, visual channels, and global controls.
+
+
+TOOLBAR
+-------
+The toolbar runs along the top of the project window. Its controls from left
+to right are:
+
+  vis_add          Adds a new visual channel to the project
+  FPS display      Shows the current frames per second
+  Utilities        Toggles the utility filter menu
+  Effects          Toggles the effects filter menu
+  Exps             Toggles the experimental filter menu
+  Resolution       Two number boxes setting the main project's output resolution
+                   (max 4000x4000px). Independent of individual combo resolutions
+  Midi_learn       Activates MIDI learn mode. When active, click any slider then
+                   move a knob or slider on a connected MIDI device to map it.
+                   Sliders can be unmapped by clicking them and pressing the - key
+  Combo save       Saves the current project state (excluding global controls) as
+                   a combo when a name is entered and confirmed
+  Combo_panel      Opens the combo filter menu
+  Presets          Opens the project-level preset panel
+
+
+VISUAL CHANNELS
+---------------
+Visual channels are the core processing units of the project. Each channel
+holds a left-to-right chain of filters whose inputs and outputs are wired
+automatically.
+
+  - Added via the vis_add button in the toolbar
+  - Deleted by clicking the channel title and pressing the - key
+  - Can be drag-and-dropped across different contexts (e.g. from the main
+    project into a combo's viewer)
+
+
+================================================================================
+GLOBAL CONTROLS
+================================================================================
+
+The global controls bar runs along the bottom of the main project window.
+It holds the audio controls and the visual master channel.
+
+
+AUDIO CONTROLS
+--------------
+Audio is integrated via an audio input device, selectable within the audio
+device parameters. There is no hard limit on the number of audio channels,
+though two channels is standard for stereo input.
+
+Each audio channel is represented by a volume slider and an audio spectrum
+visualisation. Channels can be added with the blue + button to the left of
+the channel sliders and removed with the red X button on any individual
+channel. To specify a channel's input source, use the Names parameter in the
+Parameter Viewer for each channel.
+
+All audio channels feed into the master audio channel, which controls the
+overall audio output level.
+
+The blue menu button to the right of the master channel opens the audio
+device parameters, where the input device and other settings can be
+configured.
+
+
+AUDIO FILTER (ch3)
+------------------
+The purple ch3 audio filter behaves like a visual filter in terms of
+drag-and-drop placement, but produces no image output. It listens to a
+specified audio channel and exposes its processed signal as a CHOP for
+mapping to sliders.
+
+  - The audio CHOP (grey bar labelled chan1) can be dragged and dropped onto
+    any slider to map the audio signal to it
+  - When the audio filter is collapsed, the monotone vertical bar — which
+    reflects the selected channel's level via luminosity — can also be
+    dragged onto sliders
+  - Each audio filter can specify which audio channel it listens to via the
+    filter's names parameter (ch1 for chan1, ch2 for chan2, etc.)
+  - Sliders can be unmapped by clicking them and pressing the - key
+
+Controls from left to right:
+
+  Frequency range    Defines the frequency band to listen to. 0-18000 captures
+  (two sliders)      the full range; 0-300 captures bass only. Exponential.
+
+  Limit              Maps the range 0 to limit onto 0-1. Decreasing the limit
+                     increases the output value (capped at 1)
+
+  Gain               Multiplies the output value by a constant
+
+  Add                Adds a constant to the output value
+
+  Smooth             Smooths the shape of the audio CHOP over time
+
+  Fall               Smooths the CHOP shape only on downward slopes
+                     (peaks are unaffected)
+
+  Invert             Inverts the output value
+
+
+VISUAL MASTER CHANNEL
+---------------------
+The visual master channel processes the project's final output. Any sliders
+within the master channel are not affected by the preset system.
+
+
+================================================================================
+SLIDERS
+================================================================================
+
+Sliders are the primary parameter controls within the project. They can be
+controlled via:
+
+  - Manual input       Click and drag
+  - MIDI device        Using MIDI learn mode
+  - CHOP mapping       Drag an audio CHOP or other CHOP source onto the slider
+  - Preset system      Via saved and recalled presets
+
+To unmap a slider from a MIDI device or CHOP, click the slider and press
+the - key.
+
+
+================================================================================
+FILTERS
+================================================================================
+
+Filters are the modular building blocks of the project. They are organised
+into five categories: Utilities, Effects, Exps, Combos, and Audio Filter.
+
+
+ADDING AND ARRANGING FILTERS
+-----------------------------
+  Adding           Click and drag a filter's title from any menu and drop it
+                   into any blank space within a visual channel. Filters dropped
+                   into empty space are placed at the rightmost position
+
+  Inserting        Drop a filter onto another filter's title to place it
+                   immediately to the left of that filter
+
+  Repositioning    Filters already placed in the project can be dragged and
+                   repositioned using the same methods. Visual chain wiring
+                   updates automatically
+
+  Deleting         Click the filter's title then press the - key
+
+
+UTILITIES
+---------
+Utility filters provide core functionality:
+
+  movie_in         Drag and drop a movie or image file from outside
+                   TouchDesigner into the filter's green input box
+
+  Input / Output   Used specifically inside combos. Input takes the signal from
+                   the filter to the left of the combo; Output sends the combo's
+                   signal to the filter on its right
+
+  Nab              Captures and holds a single frame
+
+  ImageMetrics     Converts the image to normalised numerical values for average
+                   R, G, B, luma, and motion. Sent to Ableton via TD Ableton
+
+  Movieshare       Shares the output of one filter across different channels.
+                   Drag from any empty area of a filter (not its title, sliders,
+                   or input boxes) and drop into Movieshare's input box
+
+
+DROP BOXES
+----------
+Many filters include drop boxes (e.g. Movieshare, movie_in mask, Composite).
+
+  - Drag from an empty area of any filter (excluding Movieshare and Combos)
+    and drop onto a target filter's drop box to share that filter's output
+  - Click a drop box to remove the shared image and reset it to blank
+
+NOTE: Routing from a later point in a visual chain to an earlier point will
+break the chain unless a Feedback filter is used.
+
+
+EFFECTS AND EXPS
+----------------
+Effects filters provide more creative functions. Exps (experimental) are
+filters currently in development and testing. Both categories follow the same
+drag-and-drop workflow as Utilities.
+
+
+================================================================================
+COMBOS
+================================================================================
+
+Combos are composite filters assembled from combinations of basic filters and
+visual channels. They slot into visual chains exactly like regular filters,
+accepting input and passing output through their Input and Output utility
+filters.
+
+
+USING COMBOS
+------------
+  View             Opens the combo's internal filter/channel editor, where
+                   filters can be added, adjusted, and arranged using the same
+                   methods as the main project
+
+  Presets          Opens or collapses that combo's preset panel. Combo presets
+                   only affect sliders within the combo itself
+
+  Deactivation     Combos can be deactivated to free CPU/GPU resources.
+                   Setting up a complex filter chain as a combo and deactivating
+                   it when not in use can improve overall FPS
+
+  Resolution       Combos can set their processing resolution independently
+                   of the main project
+
+
+COMBO TOOLBAR (VIEW MODE)
+--------------------------
+  vis_add          Adds a new visual channel inside the combo
+  Update           Updates the combo at its source level in the combo menu,
+                   provided the source combo shares the same name
+  Save new         Saves the combo as an entirely new combo by entering a new
+                   name in the textbox
+  Rename           Renames the combo within the current project
+
+
+================================================================================
+PRESETS
+================================================================================
+
+The preset system allows slider values across the project to be saved and
+recalled, with crossfading between states.
+
+
+SAVING A PRESET
+---------------
+Enter a name in the preset textbox at the bottom of any preset panel and click
+outside the textbox to confirm. A new preset entry will appear with a labelled
+slider and two buttons:
+
+  Top button (red)     Deletes the preset
+  Second button        Opens the preset's snapshot — a version of the project's
+  (green)              slider state at the time of saving. Sliders within the
+                       snapshot can be readjusted to update the preset
+
+
+USING PRESETS
+-------------
+The preset slider crossfades between the current project state (held by an
+internal hold CHOP) and the saved preset values. The hold CHOP can be
+activated manually via the preset toggle button.
+
+Multiple presets can be active simultaneously, and their outputs are combined
+via a bind CHOP that routes to each slider's preset input.
+
+To swap or fade between presets:
+
+  1. Hit the toggle button to update the hold CHOP to the current slider state
+  2. Adjust the target preset's slider to the desired blend point
+  3. To bring in a new preset, hit the toggle again to update, then adjust
+     the new preset's slider
+
+
+PRESET SCOPE
+------------
+Presets exist at two levels:
+
+  Project presets    Save and control all sliders within the main project
+
+  Combo presets      Save and control only the sliders within that specific
+                     combo
+
+Presets only operate on sliders at their own level. A project-level preset
+does not directly control sliders inside a combo. Combo sliders are controlled
+only by their own combo's presets, though these can be indirectly influenced
+by parent-level preset nodes.
+
+
+================================================================================
+KNOWN ISSUES AND LIMITATIONS
+================================================================================
+
+No save/load for different projects
+  Must be done manually in the TD network editor.
+
+Preset instability
+  Mismatches between the preset's current and output CHOPs can cause slider
+  values to swap unexpectedly. Source not fully isolated.
+
+Preset inflexibility
+  Presets rely on the project or combo being in a fixed state. Adding, removing,
+  or reordering filters after a preset has been saved creates a mismatch between
+  the current sliders and the preset. This limits experimentation after presets
+  have been created. Ideally presets could persist across structural changes to
+  the filter chain.
+
+Cannot drag from combo empty space or Movieshare empty space
+  Unresolved.
+
+ImageMetrics
+  Currently relies on TD Ableton and has limited standalone usage.
+
+Feedback filter
+  Untested.
+
+Deleting a filter breaks the visual chain
+  Can be restored by adding a new filter to the chain or dragging the rightmost
+  filter into empty space, retriggering the auto-wiring.
+
+Dragging filters across windows loses the cursor icon
+  The drop still functions correctly but the missing cursor is poor UX.
+
+No Cmd+Z, Cmd+C, or Cmd+V functionality
+  Unresolved.
+
+Audio global controls UI
+  Poor overall, particularly the channel selection interface.
+
+Combo menu organisation
+  Becomes disorganised when large numbers of combos exist.
+
+No in-app filter editing
+  Filters cannot be edited or updated without entering the TD network editor.
+
+Panel selection rigidity
+  Title and slider selection uses path-based wildcard expressions which are
+  inflexible as the project grows. The alternate opfind approach causes 6-8
+  second lag on larger projects. Use of opfinds across the project add 
+  significant overhead especially when the scale of the project grows.
+
+Saved/updated combo presets not cleared up
+  When a combo is saved/updated, any new preset sliders are not accounted for
+  in the slider cleanup process (I.e. still mapped to parent presets/midi_in)
+
+Cornerpin filter buggy when project dimensions adjusted. Corners can be stuck 
+Out of frame
+
+
+================================================================================
+KEY ISSUES TO ADDRESS
+================================================================================
+
+Consistent preset mappings. Ensuring presets are always set up when any slider
+Is added/removed from the project/finding a better method to map presets. 
+
+Slow UI. Usage of things like OPFinds, an inefficient preset setup system 
+(remapping for all sliders on any filter add/delete) plus unrefined processes in
+general causing very slow UI/network editing. Need to ensure that large projects
+can run UI without delay/lag.
+
+GUI shortcomings: Some parts of UI unworkable: 
+	audio channel controls - name textbox for selecting channels awful. 
+	
+
+
+
+
+
+
+
+
+
+
+
+
+

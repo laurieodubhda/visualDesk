@@ -1,0 +1,7 @@
+# OS
+.DS_Store
+
+# TD backups (disabled but just in case)
+Backup/
+*.toe.bak
+visualDesk[0-9]*.toe
