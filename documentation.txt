@@ -372,13 +372,24 @@ can run UI without delay/lag.
 
 GUI shortcomings: Some parts of UI unworkable: 
 	audio channel controls - name textbox for selecting channels awful. 
+
+
+Slow UI: making adjustments in network editor/in the main GUI slow despite regular FPS. Opfinds seem to be the culprit with the slowness accumulating when the scale of the project grows. Opfinds within scripting contribute but also opfinds within presets plus any combo's presets
 	
 
+Title panel execute: This causes issues when using wildcard pyramids. Large delays after deleting a filter (not so bad when adding filters). Using the opfind for this actually seems alright - even in a project with 100+titles, the delay seems manageable.
 
+Slider panel execute: using wildcard pyramid causes big delays. Using op find causes some delay (tested with large project)
 
+Main bottleneck seems to be use of opfinds in presets, when a number of combos use a number of presets the amount of opfinds involved scales rapidly and big delays when adding/removing filters.
 
+New build considerations: 
 
-
+How and when preset mappings are created,
+Replace/reduce/optimise use of opfinds,
+Method of saving presets really cumbersome: pros, can edit presets, cons, can bloat the project quickly,
+Reduce reliance on python scripting - think about deferring replication functions to replicator comps,
+Reorganise audio control,
 
 
 
